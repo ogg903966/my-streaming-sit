@@ -116,7 +116,224 @@ function csv(){const rows=[['type','title_or_source','platform_or_date','views_o
 document.getElementById('exportBtn').addEventListener('click',csv);document.getElementById('exportBtn2').addEventListener('click',csv);
 document.getElementById('clearBtn').addEventListener('click',()=>{if(confirm('ဗီဒီယိုနဲ့ ဝင်ငွေစာရင်းအားလုံးကို အပြီးဖျက်မှာ သေချာပါသလား?')){db={videos:[],income:[]};save()}});
 document.querySelector('#incomeForm [name=date]').value=new Date().toISOString().slice(0,10);
-render();
+async function api(path, options = {}) {
+  const headers = new Headers(options.headers || {});
+  headers.set('Content-Type', 'application/json');
+  headers.set('x-creator-password', apiPassword);
+
+  const response = await fetch(path, {
+    ...options,
+    headers
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      sessionStorage.removeItem('creator-hub-password');
+    }
+    throw new Error(data.error || 'Request failed');
+  }
+
+  return data;
+}
+
+let apiPassword =
+  sessionStorage.getItem('creator-hub-password') ||
+  prompt('Creator Hub Password ကို ထည့်ပါ။');
+
+if (apiPassword) {
+  sessionStorage.setItem('creator-hub-password', apiPassword);
+}
+
+async function refreshFromApi() {
+  const [vr, ir] = await Promise.all([
+    api('/api/videos'),
+    api('/api/income')
+  ]);
+
+  db = {
+    videos: (vr.videos || []).map(v => ({
+      ...v,
+      id: String(v.id)
+    })),
+    income: (ir.income || []).map(i => ({
+      id: String(i.id),
+      source: i.source,
+      amount: Number(i.amount),
+      date: i.income_date,
+      note: i.note || ''
+    }))
+  };
+
+  localStorage.setItem(KEY, JSON.stringify(db));
+  render();
+}
+
+const oldVideoForm = document.getElementById('videoForm');
+const videoForm = oldVideoForm.cloneNode(true);
+oldVideoForm.replaceWith(videoForm);
+
+videoForm.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const f = new FormData(videoForm);
+
+  try {
+    await api('/api/videos', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: f.get('title').trim(),
+        platform: f.get('platform'),
+        views: Number(f.get('views') || 0),
+        url: f.get('url').trim()
+      })
+    });
+
+    videoForm.reset();
+    videoForm.elements.views.value = 0;
+    await refreshFromApi();
+    alert('ဗီဒီယိုစာရင်း သိမ်းပြီးပါပြီ။');
+  } catch (err) {
+    alert('သိမ်းမရပါ: ' + err.message);
+  }
+});
+
+const oldIncomeForm = document.getElementById('incomeForm');
+const incomeForm = oldIncomeForm.cloneNode(true);
+oldIncomeForm.replaceWith(incomeForm);
+
+incomeForm.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const f = new FormData(incomeForm);
+
+  try {
+    await api('/api/income', {
+      method: 'POST',
+      body: JSON.stringify({
+        source: f.get('source'),
+        amount: Number(f.get('amount') || 0),
+        income_date: f.get('date'),
+        note: f.get('note').trim()
+      })
+    });
+
+    incomeForm.reset();
+    incomeForm.elements.date.value =
+      new Date().toISOString().slice(0, 10);
+
+    await refreshFromApi();
+    alert('ဝင်ငွေမှတ်တမ်း သိမ်းပြီးပါပြီ။');
+  } catch (err) {
+    alert('သိမ်းမရပါ: ' + err.message);
+  }
+});
+
+document.addEventListener('click', async e => {
+  const v = e.target.closest('[data-del-video]');
+  const i = e.target.closest('[data-del-income]');
+
+  if (!v && !i) return;
+
+  e.preventDefault();
+  e.stopImmediatePropagation();
+
+  if (!confirm('ဒီစာရင်းကို ဖျက်မှာ သေချာပါသလား?')) return;
+
+  try {
+    const path = v
+      ? '/api/videos/' + v.dataset.delVideo
+      : '/api/income/' + i.dataset.delIncome;
+
+    await api(path, { method: 'DELETE' });
+    await refreshFromApi();
+  } catch (err) {
+    alert('ဖျက်မရပါ: ' + err.message);
+  }
+}, true);
+
+const oldClearBtn = document.getElementById('clearBtn');
+const clearBtn = oldClearBtn.cloneNode(true);
+oldClearBtn.replaceWith(clearBtn);
+
+clearBtn.addEventListener('click', async () => {
+  if (!confirm('ဗီဒီယိုနဲ့ ဝင်ငွေစာရင်းအားလုံးကို ဖျက်မှာ သေချာပါသလား?')) {
+    return;
+  }
+
+  try {
+    for (const v of db.videos) {
+      await api('/api/videos/' + v.id, { method: 'DELETE' });
+    }
+
+    for (const i of db.income) {
+      await api('/api/income/' + i.id, { method: 'DELETE' });
+    }
+
+    await refreshFromApi();
+    alert('စာရင်းအားလုံး ဖျက်ပြီးပါပြီ။');
+  } catch (err) {
+    alert('ဖျက်မရပါ: ' + err.message);
+  }
+});
+
+(async () => {
+  if (!apiPassword) {
+    alert('Password မထည့်ထားပါ။ Page ကို ပြန်ဖွင့်ပြီး Password ထည့်ပါ။');
+    render();
+    return;
+  }
+
+  try {
+    const [vr, ir] = await Promise.all([
+      api('/api/videos'),
+      api('/api/income')
+    ]);
+
+    const remoteVideos = vr.videos || [];
+    const remoteIncome = ir.income || [];
+
+    if (
+      remoteVideos.length === 0 &&
+      remoteIncome.length === 0 &&
+      (db.videos.length > 0 || db.income.length > 0)
+    ) {
+      for (const v of db.videos) {
+        await api('/api/videos', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: v.title,
+            platform: v.platform,
+            views: Number(v.views || 0),
+            url: v.url || ''
+          })
+        });
+      }
+
+      for (const i of db.income) {
+        await api('/api/income', {
+          method: 'POST',
+          body: JSON.stringify({
+            source: i.source,
+            amount: Number(i.amount || 0),
+            income_date: i.date,
+            note: i.note || ''
+          })
+        });
+      }
+    }
+
+    await refreshFromApi();
+  } catch (err) {
+    alert(
+      'Database ချိတ်ဆက်မှု မအောင်မြင်ပါ။ ' +
+      err.message +
+      '\nPassword မှန်မမှန် စစ်ဆေးပါ။'
+    );
+    render();
+  }
+})();
 </script>
 </body>
 </html>
