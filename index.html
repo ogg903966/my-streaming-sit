@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="my">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101522">
+<title>Creator Hub — ဝင်ငွေစီမံခန့်ခွဲမှု</title>
+<style>
+:root{--bg:#0b1020;--panel:#131b2e;--panel2:#18233a;--text:#f3f6ff;--muted:#a8b3c9;--accent:#7c9cff;--line:#293650;--green:#63d6a0;--red:#ff8b8b}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0b1020,#10192b 55%,#111b2d);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Myanmar",sans-serif}
+header{padding:22px 18px 14px;max-width:1100px;margin:auto;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#7c9cff,#a28bff);display:grid;place-items:center;font-size:22px;color:#101522;font-weight:900}
+h1{font-size:21px;margin:0}header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.wrap{max-width:1100px;margin:auto;padding:0 18px 36px}.notice{background:#1b2b44;border:1px solid #344967;border-radius:14px;padding:12px 14px;color:#dce8ff;font-size:13px;margin:8px 0 18px}
+nav{display:flex;gap:8px;overflow:auto;margin-bottom:18px;padding-bottom:3px}nav button{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:10px 14px;border-radius:12px;font-weight:650;cursor:pointer}nav button.active{background:var(--accent);border-color:var(--accent);color:#091020}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat,.panel{background:rgba(19,27,46,.94);border:1px solid var(--line);border-radius:17px;padding:16px}.stat .label{font-size:13px;color:var(--muted)}.stat .value{font-size:24px;font-weight:800;margin-top:8px;overflow-wrap:anywhere}.stat .sub{font-size:12px;color:var(--muted);margin-top:4px}
+.cols{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.panel h2{font-size:17px;margin:0 0 14px}.panel p.help{color:var(--muted);font-size:13px;margin-top:-6px}
+form{display:grid;gap:10px}label{display:grid;gap:6px;font-size:13px;color:var(--muted)}input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #34415c;background:#0d1425;color:var(--text);font:inherit;min-width:0}input:focus,select:focus{outline:2px solid var(--accent);border-color:transparent}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:11px;background:var(--accent);color:#0b1020;font-weight:800;padding:12px 14px;cursor:pointer}.btn.secondary{background:#253451;color:var(--text);border:1px solid #3b4c6c}.btn.danger{background:#422632;color:#ffd8dd;border:1px solid #73404d}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.list{display:grid;gap:10px}.item{border:1px solid var(--line);background:#10182a;border-radius:13px;padding:12px;display:flex;gap:12px;justify-content:space-between;align-items:flex-start}.item strong{display:block;overflow-wrap:anywhere}.meta{font-size:12px;color:var(--muted);margin-top:5px}.pill{display:inline-block;border-radius:999px;padding:4px 8px;background:#253451;color:#dce6ff;font-size:11px;margin-top:6px}.empty{border:1px dashed #3b4963;border-radius:12px;padding:20px;text-align:center;color:var(--muted);font-size:13px}.amount{font-weight:800;color:var(--green);white-space:nowrap}.hidden{display:none!important}.footer{color:var(--muted);font-size:12px;text-align:center;margin-top:22px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:1fr}header{align-items:flex-start}.stat .value{font-size:21px}}
+@media(max-width:390px){.wrap{padding-left:12px;padding-right:12px}.grid{gap:8px}.stat,.panel{padding:12px}.row2{grid-template-columns:1fr}h1{font-size:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">▶</div><div><h1>Creator Hub</h1><p>ဗီဒီယိုနှင့် ဝင်ငွေ စီမံခန့်ခွဲမှု</p></div></div>
+  <button class="btn secondary" id="exportBtn">စာရင်း CSV ထုတ်ရန်</button>
+</header>
+<main class="wrap">
+  <div class="notice">စတင်အသုံးပြုရန် အခမဲ့ Prototype ဖြစ်ပါတယ်။ ဒီဗားရှင်းမှာ အချက်အလက်တွေကို သင့်စက်ရဲ့ Browser ထဲမှာသာ သိမ်းထားပါတယ်။ အခြားဖုန်း/ကွန်ပျူတာနဲ့ အလိုအလျောက် မမျှဝေပါ။</div>
+  <nav>
+    <button class="active" data-tab="dashboard">ခြုံငုံကြည့်ရန်</button>
+    <button data-tab="videos">ဗီဒီယိုစာရင်း</button>
+    <button data-tab="income">ဝင်ငွေစာရင်း</button>
+    <button data-tab="settings">ဒေတာ/ဆက်တင်</button>
+  </nav>
+  <section id="dashboard">
+    <div class="grid">
+      <div class="stat"><div class="label">ဗီဒီယိုစုစုပေါင်း</div><div class="value" id="statVideos">0</div><div class="sub">စာရင်းသွင်းထားသော ဗီဒီယို</div></div>
+      <div class="stat"><div class="label">ကြည့်ရှုမှုစုစုပေါင်း</div><div class="value" id="statViews">0</div><div class="sub">ကိုယ်တိုင်ထည့်ထားသော ကိန်းဂဏန်း</div></div>
+      <div class="stat"><div class="label">ဝင်ငွေစုစုပေါင်း</div><div class="value" id="statIncome">฿0.00</div><div class="sub">မှတ်တမ်းအားလုံး</div></div>
+      <div class="stat"><div class="label">ယခုလ ဝင်ငွေ</div><div class="value" id="statMonth">฿0.00</div><div class="sub">လက်ရှိလအတွက်</div></div>
+    </div>
+    <div class="cols">
+      <div class="panel"><h2>နောက်ဆုံးထည့်ထားသော ဗီဒီယိုများ</h2><div id="recentVideos" class="list"></div></div>
+      <div class="panel"><h2>နောက်ဆုံးဝင်ငွေမှတ်တမ်း</h2><div id="recentIncome" class="list"></div></div>
+    </div>
+  </section>
+  <section id="videos" class="hidden">
+    <div class="cols">
+      <div class="panel"><h2>ဗီဒီယိုအသစ်ထည့်ရန်</h2><p class="help">ခေါင်းစဉ်၊ ပလက်ဖောင်းနဲ့ ကိုယ်သိထားတဲ့ ကြည့်ရှုမှုကို ထည့်ပါ။</p>
+        <form id="videoForm">
+          <label>ဗီဒီယိုခေါင်းစဉ်<input name="title" required maxlength="120" placeholder="ဥပမာ - Day 1 Story Recap"></label>
+          <div class="row2"><label>ပလက်ဖောင်း<select name="platform"><option>YouTube</option><option>Facebook</option><option>TikTok</option><option>Website</option><option>အခြား</option></select></label><label>ကြည့်ရှုမှု<input name="views" type="number" min="0" step="1" value="0" required></label></div>
+          <label>ဗီဒီယိုလင့်ခ် (မဖြစ်မနေမဟုတ်)<input name="url" type="url" placeholder="https://..."></label>
+          <button class="btn">ဗီဒီယိုစာရင်းထဲ ထည့်မည်</button>
+        </form>
+      </div>
+      <div class="panel"><h2>ဗီဒီယိုစာရင်း</h2><div id="videoList" class="list"></div></div>
+    </div>
+  </section>
+  <section id="income" class="hidden">
+    <div class="cols">
+      <div class="panel"><h2>ဝင်ငွေအသစ် မှတ်တမ်းတင်ရန်</h2><p class="help">ရရှိပြီးသောဝင်ငွေ သို့မဟုတ် ကိုယ်တိုင်စစ်ဆေးထားသော ပမာဏကိုသာ ထည့်ပါ။</p>
+        <form id="incomeForm">
+          <label>ဝင်ငွေရင်းမြစ်<select name="source"><option>YouTube ကြော်ငြာ</option><option>Facebook Monetization</option><option>TikTok</option><option>Affiliate</option><option>Sponsor</option><option>အခြား</option></select></label>
+          <div class="row2"><label>ပမာဏ (฿)<input name="amount" type="number" min="0" step="0.01" required placeholder="0.00"></label><label>ရက်စွဲ<input name="date" type="date" required></label></div>
+          <label>မှတ်ချက်<input name="note" maxlength="160" placeholder="ဥပမာ - September payout"></label>
+          <button class="btn">ဝင်ငွေသိမ်းမည်</button>
+        </form>
+      </div>
+      <div class="panel"><h2>ဝင်ငွေမှတ်တမ်းအားလုံး</h2><div id="incomeList" class="list"></div></div>
+    </div>
+  </section>
+  <section id="settings" class="hidden">
+    <div class="panel">
+      <h2>ဒေတာနှင့် ဆက်တင်</h2>
+      <p class="help">ဒီ Prototype က စက်တွင်း Browser storage ကို သုံးပါတယ်။ Browser data ဖျက်လိုက်ရင် စာရင်းတွေ ပျောက်နိုင်တာကြောင့် CSV backup ကို ပုံမှန်ထုတ်ထားပါ။</p>
+      <div class="actions"><button class="btn secondary" id="exportBtn2">CSV Backup ထုတ်ရန်</button><button class="btn danger" id="clearBtn">ဒေတာအားလုံး ဖျက်ရန်</button></div>
+      <p class="help" style="margin-top:14px">နောက်အဆင့်တွင် Login၊ cloud database၊ လုံခြုံသော video storage နဲ့ အခြားဖုန်းမှ ဝင်သုံးနိုင်မှုကို ထည့်သွင်းနိုင်ပါတယ်။</p>
+    </div>
+  </section>
+  <div class="footer">Creator Hub • Personal-use starter • ဝင်ငွေကိန်းဂဏန်းများကို အလိုအလျောက် အတည်ပြုမပေးပါ</div>
+</main>
+<script>
+const KEY='creator-hub-v1';
+const initial={videos:[],income:[]};
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY))||structuredClone(initial)}catch(e){db={videos:[],income:[]}}
+const money=n=>'฿'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function empty(msg){return `<div class="empty">${msg}</div>`}
+function videoCard(v,withDelete=true){return `<div class="item"><div><strong>${esc(v.title)}</strong><div class="meta">${esc(v.platform)} · ကြည့်ရှုမှု ${Number(v.views||0).toLocaleString()}</div>${v.url?`<div class="meta"><a style="color:#a9bdff" href="${esc(v.url)}" target="_blank" rel="noopener">ဗီဒီယိုဖွင့်ရန် ↗</a></div>`:''}</div>${withDelete?`<button class="btn danger" data-del-video="${v.id}" aria-label="ဖျက်ရန်">ဖျက်</button>`:''}</div>`}
+function incomeCard(i,withDelete=true){return `<div class="item"><div><strong>${esc(i.source)}</strong><div class="meta">${esc(i.date)}${i.note?' · '+esc(i.note):''}</div></div><div style="text-align:right"><div class="amount">${money(i.amount)}</div>${withDelete?`<button class="btn danger" style="margin-top:7px" data-del-income="${i.id}">ဖျက်</button>`:''}</div></div>`}
+function render(){
+ const totalViews=db.videos.reduce((a,v)=>a+Number(v.views||0),0);
+ const totalIncome=db.income.reduce((a,i)=>a+Number(i.amount||0),0);
+ const now=new Date(), ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+ const monthIncome=db.income.filter(i=>String(i.date||'').startsWith(ym)).reduce((a,i)=>a+Number(i.amount||0),0);
+ document.getElementById('statVideos').textContent=db.videos.length;
+ document.getElementById('statViews').textContent=totalViews.toLocaleString();
+ document.getElementById('statIncome').textContent=money(totalIncome);
+ document.getElementById('statMonth').textContent=money(monthIncome);
+ document.getElementById('videoList').innerHTML=db.videos.length?db.videos.slice().reverse().map(v=>videoCard(v)).join(''):empty('ဗီဒီယိုမရှိသေးပါ။');
+ document.getElementById('recentVideos').innerHTML=db.videos.length?db.videos.slice(-4).reverse().map(v=>videoCard(v,false)).join(''):empty('ဗီဒီယိုစာရင်းကို အရင်ထည့်ပါ။');
+ document.getElementById('incomeList').innerHTML=db.income.length?db.income.slice().reverse().map(i=>incomeCard(i)).join(''):empty('ဝင်ငွေမှတ်တမ်းမရှိသေးပါ။');
+ document.getElementById('recentIncome').innerHTML=db.income.length?db.income.slice().reverse().slice(0,4).map(i=>incomeCard(i,false)).join(''):empty('ဝင်ငွေမှတ်တမ်းကို အရင်ထည့်ပါ။');
+}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('main section').forEach(s=>s.classList.toggle('hidden',s.id!==b.dataset.tab))}));
+document.getElementById('videoForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);db.videos.push({id:Date.now().toString(),title:f.get('title').trim(),platform:f.get('platform'),views:Number(f.get('views')||0),url:f.get('url').trim()});e.target.reset();e.target.elements.views.value=0;save()});
+document.getElementById('incomeForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target);db.income.push({id:Date.now().toString(),source:f.get('source'),amount:Number(f.get('amount')||0),date:f.get('date'),note:f.get('note').trim()});e.target.reset();e.target.elements.date.value=new Date().toISOString().slice(0,10);save()});
+document.addEventListener('click',e=>{const v=e.target.closest('[data-del-video]'),i=e.target.closest('[data-del-income]');if(v&&confirm('ဒီဗီဒီယိုစာရင်းကို ဖျက်မလား?')){db.videos=db.videos.filter(x=>x.id!==v.dataset.delVideo);save()}if(i&&confirm('ဒီဝင်ငွေမှတ်တမ်းကို ဖျက်မလား?')){db.income=db.income.filter(x=>x.id!==i.dataset.delIncome);save()}});
+function csv(){const rows=[['type','title_or_source','platform_or_date','views_or_amount','url_or_note']];db.videos.forEach(v=>rows.push(['video',v.title,v.platform,v.views,v.url]));db.income.forEach(i=>rows.push(['income',i.source,i.date,i.amount,i.note]));const text=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob(['\ufeff'+text],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='creator-hub-backup.csv';a.click();URL.revokeObjectURL(a.href)}
+document.getElementById('exportBtn').addEventListener('click',csv);document.getElementById('exportBtn2').addEventListener('click',csv);
+document.getElementById('clearBtn').addEventListener('click',()=>{if(confirm('ဗီဒီယိုနဲ့ ဝင်ငွေစာရင်းအားလုံးကို အပြီးဖျက်မှာ သေချာပါသလား?')){db={videos:[],income:[]};save()}});
+document.querySelector('#incomeForm [name=date]').value=new Date().toISOString().slice(0,10);
+render();
+</script>
+</body>
+</html>
