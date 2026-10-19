@@ -1,0 +1,14 @@
+
+name = "my-streaming-sit"
+main = "worker.js"
+compatibility_date = "2026-10-19"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "creator-hub-db"
+database_id = "1f7f0e34-5674-480e-a6e9-0534c5bbe750"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
