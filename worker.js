@@ -12,7 +12,11 @@ export default {
     }
 
     if (!env.DB || !env.CREATOR_HUB_PASSWORD) {
-      return json({ error: "Database or password is not configured." }, 500);
+  return json({
+    error: "Configuration missing",
+    databaseConfigured: Boolean(env.DB),
+    passwordConfigured: Boolean(env.CREATOR_HUB_PASSWORD)
+  }, 500);
     }
 
     if (request.headers.get("x-creator-password") !== env.CREATOR_HUB_PASSWORD) {
